@@ -6,6 +6,7 @@ set(SRC
     optimize.f90
     special.f90
     amos.f90
+    function_base.f90
 )
 
 if(WITH_LAPACK)
