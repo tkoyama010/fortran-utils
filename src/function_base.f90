@@ -21,11 +21,15 @@ function angle_real(z, deg) result(res)
   implicit none
   real(dp) :: res
   real(dp) :: z
-  integer :: deg
+  integer,optional :: deg
   double precision fact
   real(dp) :: zimag, zreal
-  if(deg > 0.d0)then
-      fact = 180.d0/pi
+  if(present(deg))then
+    if(deg > 0.d0)then
+        fact = 180.d0/pi
+    else
+        fact = 1.d0
+    end if
   else
       fact = 1.d0
   endif
@@ -38,11 +42,15 @@ function angle_complex(z, deg) result(res)
   implicit none
   real(dp) :: res
   complex(dp*2) :: z
-  integer :: deg
+  integer,optional :: deg
   double precision fact
   real(dp) :: zimag, zreal
-  if(deg > 0.d0)then
-      fact = 180.d0/pi
+  if(present(deg))then
+    if(deg > 0.d0)then
+        fact = 180.d0/pi
+    else
+        fact = 1.d0
+    end if
   else
       fact = 1.d0
   endif
