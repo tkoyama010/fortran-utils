@@ -17,11 +17,11 @@ end interface angle
 
 contains
 
-function angle_real(z, deg) result(res)
+elemental pure function angle_real(z, deg) result(res)
   implicit none
   real(dp) :: res
-  real(dp) :: z
-  integer,optional :: deg
+  real(dp),intent(in) :: z
+  integer,optional,intent(in) :: deg
   double precision fact
   real(dp) :: zimag, zreal
   if(present(deg))then
@@ -38,11 +38,11 @@ function angle_real(z, deg) result(res)
   res = atan2(zimag, zreal) * fact
 end function angle_real
 
-function angle_complex(z, deg) result(res)
+elemental pure function angle_complex(z, deg) result(res)
   implicit none
   real(dp) :: res
-  complex(dp*2) :: z
-  integer,optional :: deg
+  complex(dp*2),intent(in) :: z
+  integer,optional,intent(in) :: deg
   double precision fact
   real(dp) :: zimag, zreal
   if(present(deg))then
