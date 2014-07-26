@@ -13,6 +13,10 @@ interface str
     module procedure str_int, str_real, str_real_n
 end interface
 
+interface loadtxt
+    module procedure loadtxt_real, loadtxt_complex
+end interface
+
 contains
 
 function upcase(s) result(t)
@@ -173,7 +177,7 @@ print *, msg
 stop 1
 end subroutine
 
-subroutine loadtxt(filename, d)
+subroutine loadtxt_real(filename, d)
 ! Loads a 2D array from a text file.
 !
 ! Arguments
@@ -202,6 +206,65 @@ character :: c
 integer :: s, ncol, nrow, ios, i
 logical :: lastwhite
 real(dp) :: r
+
+open(newunit=s, file=filename, status="old")
+
+! determine number of columns
+ncol = 0
+lastwhite = .true.
+do
+   read(s, '(a)', advance='no', iostat=ios) c
+   if (ios /= 0) exit
+   if (lastwhite .and. .not. whitechar(c)) ncol = ncol + 1
+   lastwhite = whitechar(c)
+end do
+
+rewind(s)
+
+! determine number or rows
+nrow = 0
+do
+   read(s, *, iostat=ios) r
+   if (ios /= 0) exit
+   nrow = nrow + 1
+end do
+
+rewind(s)
+
+allocate(d(nrow, ncol))
+do i = 1, nrow
+    read(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+
+subroutine loadtxt_complex(filename, d)
+! Loads a 2D array from a text file.
+!
+! Arguments
+! ---------
+!
+! Filename to load the array from
+character(len=*), intent(in) :: filename
+! The array 'd' will be automatically allocated with the correct dimensions
+complex(dp*2), allocatable, intent(out) :: d(:, :)
+!
+! Example
+! -------
+!
+! complex(dp*2), allocatable :: data(:, :)
+! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+!
+! Where 'log.txt' contains for example::
+!
+!     (1,1) (2,2) (3,3)
+!     (2,2) (4,4) (6,6)
+!     ...
+!
+character :: c
+integer :: s, ncol, nrow, ios, i
+logical :: lastwhite
+complex(dp*2) :: r
 
 open(newunit=s, file=filename, status="old")
 
