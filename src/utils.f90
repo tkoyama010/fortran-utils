@@ -17,6 +17,10 @@ interface loadtxt
     module procedure loadtxt_real, loadtxt_complex
 end interface
 
+interface savetxt
+    module procedure savetxt_real, savetxt_complex
+end interface
+
 contains
 
 function upcase(s) result(t)
@@ -297,7 +301,7 @@ end do
 close(s)
 end subroutine
 
-subroutine savetxt(filename, d)
+subroutine savetxt_real(filename, d)
 ! Saves a 2D array into a textfile.
 !
 ! Arguments
@@ -310,6 +314,29 @@ real(dp), intent(in) :: d(:, :)           ! The 2D array to save
 ! -------
 !
 ! real(dp) :: data(3, 2)
+! call savetxt("log.txt", data)
+
+integer :: s, i
+open(newunit=s, file=filename, status="replace")
+do i = 1, size(d, 1)
+    write(s, *) d(i, :)
+end do
+close(s)
+end subroutine
+
+subroutine savetxt_complex(filename, d)
+! Saves a 2D array into a textfile.
+!
+! Arguments
+! ---------
+!
+character(len=*), intent(in) :: filename  ! File to save the array to
+complex(dp*2), intent(in) :: d(:, :)           ! The 2D array to save
+!
+! Example
+! -------
+!
+! complex(dp*2) :: data(3, 2)
 ! call savetxt("log.txt", data)
 
 integer :: s, i
