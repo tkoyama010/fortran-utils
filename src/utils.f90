@@ -14,7 +14,7 @@ interface str
 end interface
 
 interface loadtxt
-    module procedure loadtxt_int, loadtxt_real, loadtxt_complex
+    module procedure loadtxt_int, loadtxt_real_1Darray, loadtxt_real_2Darray, loadtxt_complex
 end interface
 
 interface savetxt
@@ -242,7 +242,67 @@ end do
 close(s)
 end subroutine
 
-subroutine loadtxt_real(filename, d)
+subroutine loadtxt_real_1Darray(filename, d)
+! Loads a 1D array from a text file.
+!
+! Arguments
+! ---------
+!
+! Filename to load the array from
+character(len=*), intent(in) :: filename
+! The array 'd' will be automatically allocated with the correct dimensions
+real(dp), allocatable, intent(out) :: d(:)
+!
+! Example
+! -------
+!
+! real(dp), allocatable :: data(:)
+! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+!
+! Where 'log.txt' contains for example::
+!
+!     1 
+!     2 
+!     8 
+!     11
+!     ...
+!
+character :: c
+integer :: s, nrow, ios, i
+logical :: lastwhite
+real(dp) :: r
+
+open(newunit=s, file=filename, status="old")
+
+! check dimension of load array
+lastwhite = .true.
+do
+   read(s, '(a)', advance='no', iostat=ios) c
+   if (ios /= 0) exit
+   if (lastwhite .and. .not. whitechar(c)) call stop_error("Load text is not 1D array.")
+   lastwhite = whitechar(c)
+end do
+
+rewind(s)
+
+! determine number or rows
+nrow = 0
+do
+   read(s, *, iostat=ios) r
+   if (ios /= 0) exit
+   nrow = nrow + 1
+end do
+
+rewind(s)
+
+allocate(d(nrow))
+do i = 1, nrow
+    read(s, *) d(i)
+end do
+close(s)
+end subroutine
+
+subroutine loadtxt_real_2Darray(filename, d)
 ! Loads a 2D array from a text file.
 !
 ! Arguments
