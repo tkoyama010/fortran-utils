@@ -18,7 +18,7 @@ interface loadtxt
 end interface
 
 interface savetxt
-    module procedure savetxt_real, savetxt_complex
+    module procedure savetxt_real_1Darray, savetxt_real_2Darray, savetxt_complex
 end interface
 
 contains
@@ -362,7 +362,30 @@ end do
 close(s)
 end subroutine
 
-subroutine savetxt_real(filename, d)
+subroutine savetxt_real_1Darray(filename, d)
+! Saves a 1D array into a textfile.
+!
+! Arguments
+! ---------
+!
+character(len=*), intent(in) :: filename  ! File to save the array to
+real(dp), intent(in) :: d(:)              ! The 1D array to save
+!
+! Example
+! -------
+!
+! real(dp) :: data(3)
+! call savetxt("log.txt", data)
+
+integer :: s, i
+open(newunit=s, file=filename, status="replace")
+do i = 1, size(d, 1)
+    write(s, *) d(i)
+end do
+close(s)
+end subroutine
+
+subroutine savetxt_real_2Darray(filename, d)
 ! Saves a 2D array into a textfile.
 !
 ! Arguments
