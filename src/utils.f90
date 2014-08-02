@@ -438,7 +438,7 @@ subroutine savetxt_complex_2Darray(filename, d)
 ! ---------
 !
 character(len=*), intent(in) :: filename  ! File to save the array to
-complex(dp*2), intent(in) :: d(:, :)           ! The 2D array to save
+complex(dp*2), intent(in) :: d(:, :)      ! The 2D array to save
 !
 ! Example
 ! -------
