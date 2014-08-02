@@ -14,7 +14,8 @@ interface str
 end interface
 
 interface loadtxt
-    module procedure loadtxt_int, loadtxt_real_1Darray, loadtxt_real_2Darray, loadtxt_complex_1Darray, loadtxt_complex_2Darray
+    module procedure loadtxt_int, loadtxt_real_0Darray, loadtxt_real_1Darray, loadtxt_real_2Darray, &
+    loadtxt_complex_1Darray, loadtxt_complex_2Darray
 end interface
 
 interface savetxt
@@ -239,6 +240,66 @@ allocate(d(nrow, ncol))
 do i = 1, nrow
     read(s, *) d(i, :)
 end do
+close(s)
+end subroutine
+
+subroutine loadtxt_real_0Darray(filename, d)
+! Loads a 0D array from a text file.
+!
+! Arguments
+! ---------
+!
+! Filename to load the array from
+character(len=*), intent(in) :: filename
+! The array 'd' will be automatically allocated with the correct dimensions
+real(dp), intent(out) :: d
+!
+! Example
+! -------
+!
+! real(dp) :: data
+! call loadtxt("log.txt", data)  ! 'data' will be automatically allocated
+!
+! Where 'log.txt' contains for example::
+!
+!     1 
+!
+character :: c
+integer :: s, ncol, nrow, ios, i
+logical :: lastwhite
+real(dp) :: r
+
+open(newunit=s, file=filename, status="old")
+
+! check dimension of load array
+ncol = 0
+lastwhite = .true.
+do
+   read(s, '(a)', advance='no', iostat=ios) c
+   if (ios /= 0) exit
+   if (lastwhite .and. .not. whitechar(c)) ncol = ncol + 1
+   lastwhite = whitechar(c)
+end do
+if(ncol>1)then
+   call stop_error("Load text "//filename//" is not 1D array.")
+endif
+
+rewind(s)
+
+! determine number or rows
+nrow = 0
+do
+   read(s, *, iostat=ios) r
+   if (ios /= 0) exit
+   nrow = nrow + 1
+end do
+if(nrow>1)then
+   call stop_error("Load text "//filename//" is not 1D array.")
+endif
+
+rewind(s)
+
+read(s, *) d
 close(s)
 end subroutine
 
