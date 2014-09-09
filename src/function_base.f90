@@ -67,8 +67,8 @@ end function angle_complex
 
 elemental pure function absolute_complex(x) result(res)
   implicit none
-  real(8) :: res
-  complex(16), intent(in) :: x
+  real(dp) :: res
+  complex(dp*2), intent(in) :: x
   res = sqrt(real(x)**2+aimag(x)**2)
 end function absolute_complex
 
