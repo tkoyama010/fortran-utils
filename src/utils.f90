@@ -545,6 +545,11 @@ end do
 
 rewind(s)
 
+! check error
+if(ncol ==0 .or. nrow == 0)then
+  call stop_error("loadtxt: there is no complex data in " // filename)
+end if
+
 allocate(d(nrow, ncol))
 do i = 1, nrow
     read(s, *) d(i, :)
