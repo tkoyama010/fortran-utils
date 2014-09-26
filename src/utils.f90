@@ -20,7 +20,7 @@ end interface
 
 interface savetxt
     module procedure savetxt_real_0Darray, savetxt_real_1Darray, savetxt_real_2Darray, &
-    savetxt_complex_1Darray, savetxt_complex_2Darray
+    savetxt_complex_0Darray, savetxt_complex_1Darray, savetxt_complex_2Darray
 end interface
 
 contains
@@ -616,6 +616,27 @@ open(newunit=s, file=filename, status="replace")
 do i = 1, size(d, 1)
     write(s, *) d(i, :)
 end do
+close(s)
+end subroutine
+
+subroutine savetxt_complex_0Darray(filename, d)
+! Saves a 0D array into a textfile.
+!
+! Arguments
+! ---------
+!
+character(len=*), intent(in) :: filename  ! File to save the array to
+complex(dp*2), intent(in) :: d            ! The 0D array to save
+!
+! Example
+! -------
+!
+! complex(dp*2) :: data
+! call savetxt("log.txt", data)
+
+integer :: s
+open(newunit=s, file=filename, status="replace")
+write(s, *) d
 close(s)
 end subroutine
 
