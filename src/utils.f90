@@ -545,6 +545,11 @@ end do
 
 rewind(s)
 
+! check error
+if(ncol ==0 .or. nrow == 0)then
+  call stop_error("loadtxt: there is no complex data in " // filename)
+end if
+
 allocate(d(nrow, ncol))
 do i = 1, nrow
     read(s, *) d(i, :)
@@ -658,7 +663,7 @@ complex(dp*2), intent(in) :: d(:)         ! The 1D array to save
 integer :: s, i
 open(newunit=s, file=filename, status="replace")
 do i = 1, size(d, 1)
-    write(s, *) d(i)
+    write(s, '(sp, " (", 1pe25.18, 1pe25.18, "j) ")') d(i)
 end do
 close(s)
 end subroutine
@@ -681,7 +686,7 @@ complex(dp*2), intent(in) :: d(:, :)      ! The 2D array to save
 integer :: s, i
 open(newunit=s, file=filename, status="replace")
 do i = 1, size(d, 1)
-    write(s, *) d(i, :)
+    write(s, '(sp, " (", 1pe25.18, 1pe25.18, "j) ")') d(i, :)
 end do
 close(s)
 end subroutine

@@ -15,6 +15,12 @@ interface angle
   module procedure angle_complex
 end interface angle
 
+public absolute
+
+interface absolute
+  module procedure absolute_complex
+end interface absolute
+
 contains
 
 elemental pure function angle_real(z, deg) result(res)
@@ -58,6 +64,13 @@ elemental pure function angle_complex(z, deg) result(res)
   zreal = real(z)
   res = atan2(zimag, zreal) * fact
 end function angle_complex
+
+elemental pure function absolute_complex(x) result(res)
+  implicit none
+  real(dp) :: res
+  complex(dp*2), intent(in) :: x
+  res = sqrt(real(x)**2+aimag(x)**2)
+end function absolute_complex
 
 end module
 
